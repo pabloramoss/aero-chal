@@ -11,41 +11,18 @@ import {
 } from "@redux/features/products/productsApiSlice";
 import {AddPoints, Redeem} from "@types";
 import Navbar from "@components/navbar";
+import Products from "@components/products";
 
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
   // const {data = [], isFetching} = useGetProductsQuery();
   const {data: user, refetch} = useGetUserQuery();
-  const {data: products} = useGetProductsQuery();
-  const {data: userHistory, refetch: refetchHistory} = useGetHistoryQuery();
 
   const [addPoints] = useAddPointsMutation();
-  const [redeem] = useRedeemMutation();
   const handleAddPoints = async (amount: AddPoints) => {
     await addPoints(amount);
     refetch();
-  };
-  //abstraer funcion
-  const canIBuy = (productCost: number) => {
-    if (user) {
-      if (productCost <= user.points) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  };
-
-  const handleRedeem = async (id: Redeem) => {
-    await redeem(id);
-    refetch();
-    refetchHistory();
-  };
-
-  const handleGetUserHistory = () => {
-    console.log(userHistory);
-    // return history
   };
 
   return (
@@ -68,22 +45,9 @@ const Home: NextPage = () => {
         <button onClick={() => handleAddPoints({amount: 1000})}>Aumentar 1000 puntos</button>
         <button onClick={() => handleAddPoints({amount: 5000})}>Aumentar 5000 puntos</button>
         <button onClick={() => handleAddPoints({amount: 7500})}>Aumentar 7500 puntos</button>
-        <button onClick={handleGetUserHistory}>See user history</button>
         <p>{user?.name}</p>
         <p>${user?.points}</p>
-        {products?.map((product) => (
-          <div key={product._id}>
-            <p>{product.name}</p>
-            <p>{product.cost}</p>
-            <p>
-              {canIBuy(product.cost) ? (
-                <button onClick={() => handleRedeem({productId: product._id})}>Buy now</button>
-              ) : (
-                <button disabled>You need more points</button>
-              )}
-            </p>
-          </div>
-        ))}
+        <Products />
       </main>
     </div>
   );

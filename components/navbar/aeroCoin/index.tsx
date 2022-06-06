@@ -39,7 +39,7 @@ function AeroCoin() {
           <Image
             alt="Aeropain Icon"
             height={isTablet ? "24" : "32"}
-            src="/assets/icons/aeropay-1.svg"
+            src="/icons/aeropay-1.svg"
             width={isTablet ? "24" : "32"}
           />
           <p>{isLoading ? "..." : user?.points}</p>
