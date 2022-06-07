@@ -1,21 +1,17 @@
 import type {NextPage} from "next";
 
 import Head from "next/head";
+import {useState} from "react";
 
-import {
-  useAddPointsMutation,
-  useGetHistoryQuery,
-  useGetProductsQuery,
-  useGetUserQuery,
-  useRedeemMutation,
-} from "@redux/features/products/productsApiSlice";
-import {AddPoints, Redeem} from "@types";
+import {useAddPointsMutation, useGetUserQuery} from "@redux/features/products/productsApiSlice";
+import {AddPoints} from "@types";
 import Navbar from "@components/navbar";
 import Products from "@components/products";
 
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
+  const [pointsAmount, setPointsAmount] = useState<AddPoints>({amount: 1000});
   // const {data = [], isFetching} = useGetProductsQuery();
   const {data: user, refetch} = useGetUserQuery();
 
@@ -23,6 +19,10 @@ const Home: NextPage = () => {
   const handleAddPoints = async (amount: AddPoints) => {
     await addPoints(amount);
     refetch();
+  };
+
+  const handleSetPoints = (amount: 1000 | 5000 | 7500) => {
+    setPointsAmount({amount: amount});
   };
 
   return (
@@ -42,9 +42,25 @@ const Home: NextPage = () => {
         {`<BackgroundWave/>`}
         {`<Products />`}
         {`<Footer />`}
-        <button onClick={() => handleAddPoints({amount: 1000})}>Aumentar 1000 puntos</button>
-        <button onClick={() => handleAddPoints({amount: 5000})}>Aumentar 5000 puntos</button>
-        <button onClick={() => handleAddPoints({amount: 7500})}>Aumentar 7500 puntos</button>
+        <button
+          className={pointsAmount.amount === 1000 ? "btn-active" : ""}
+          onClick={() => handleSetPoints(1000)}
+        >
+          Aumentar 1000 puntos
+        </button>
+        <button
+          className={pointsAmount.amount === 5000 ? "btn-active" : ""}
+          onClick={() => handleSetPoints(5000)}
+        >
+          Aumentar 5000 puntos
+        </button>
+        <button
+          className={pointsAmount.amount === 7500 ? "btn-active" : ""}
+          onClick={() => handleSetPoints(7500)}
+        >
+          Aumentar 7500 puntos
+        </button>
+        <button onClick={() => handleAddPoints(pointsAmount)}>Agregar puntos</button>
         <p>{user?.name}</p>
         <p>${user?.points}</p>
         <Products />
