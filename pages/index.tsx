@@ -18,15 +18,8 @@ import Pagination from "@components/pagination/Pagination";
 import styles from "../styles/Home.module.css";
 
 const Home: NextPage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage, setProductsPerPage] = useState(10);
+  const {data: products = [], isLoading, isSuccess} = useGetProductsQuery();
 
-  const {data: products, isLoading} = useGetProductsQuery();
-
-  //Get current products
-  const indexLastProduct = currentPage * productsPerPage;
-  const indexFirstProduct = indexLastProduct - productsPerPage;
-  const currentProducts = products?.slice(indexFirstProduct, indexLastProduct);
   const [pointsAmount, setPointsAmount] = useState<AddPoints>({amount: 1000});
   // const {data = [], isFetching} = useGetProductsQuery();
   const {data: user, refetch} = useGetUserQuery();
@@ -39,10 +32,6 @@ const Home: NextPage = () => {
 
   const handleSetPoints = (amount: 1000 | 5000 | 7500) => {
     setPointsAmount({amount: amount});
-  };
-
-  const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
   };
 
   return (
@@ -83,12 +72,12 @@ const Home: NextPage = () => {
         <button onClick={() => handleAddPoints(pointsAmount)}>Agregar puntos</button>
         <p>{user?.name}</p>
         <p>${user?.points}</p>
-        <ProductsList isLoading={isLoading} products={currentProducts} />
-        <Pagination
+        <ProductsList isLoading={isLoading} products={products} />
+        {/* <Pagination
           paginate={paginate}
           productsPerPage={productsPerPage}
           totalProducts={products?.length}
-        />
+        /> */}
         {/* <Products /> */}
       </main>
     </div>

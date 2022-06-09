@@ -1,15 +1,12 @@
 import {useEffect, useState} from "react";
 
-import {
-  useGetProductsQuery,
-  useGetUserQuery,
-  useRedeemMutation,
-} from "@redux/features/products/productsApiSlice";
+import {useGetUserQuery, useRedeemMutation} from "@redux/features/products/productsApiSlice";
 import {Product, Redeem} from "@types";
 import {sortProducts} from "@utils/sortBy";
+import Pagination from "@components/pagination/Pagination";
 
 interface ProductsTest {
-  products: Product[] | undefined;
+  products: Product[];
   isLoading: Boolean;
 }
 
@@ -18,6 +15,18 @@ const ProductsList: React.FC<ProductsTest> = ({products, isLoading}) => {
   const {data: user, refetch} = useGetUserQuery();
   const [redeem] = useRedeemMutation();
   const [sortedProducts, setSortedProducts] = useState<Product[]>([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
+
+  //Get current products
+  const indexLastProduct = currentPage * productsPerPage;
+  const indexFirstProduct = indexLastProduct - productsPerPage;
+  const currentProducts = (products: Product[]) => {
+    const productsOnScreen = products.slice(indexFirstProduct, indexLastProduct);
+
+    return productsOnScreen;
+  };
 
   //abstraer funcion
   const canIBuy = (productCost: number) => {
@@ -34,6 +43,10 @@ const ProductsList: React.FC<ProductsTest> = ({products, isLoading}) => {
     products && setSortedProducts(sortProducts(sortOption, products));
   }, [sortOption]);
 
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
   const handleRedeem = async (id: Redeem) => {
     await redeem(id);
     refetch();
@@ -48,7 +61,7 @@ const ProductsList: React.FC<ProductsTest> = ({products, isLoading}) => {
       <button onClick={() => setSortOption("lowest")}>Lowest price</button>
       <button onClick={() => setSortOption("highest")}>Highest price</button>
       {sortedProducts.length
-        ? sortedProducts.map((product) => (
+        ? currentProducts(sortedProducts).map((product) => (
             <div key={product._id}>
               <p>{product.name}</p>
               <p>{product.cost}</p>
@@ -59,7 +72,7 @@ const ProductsList: React.FC<ProductsTest> = ({products, isLoading}) => {
               )}
             </div>
           ))
-        : products?.map((product) => (
+        : currentProducts(products).map((product) => (
             <div key={product._id}>
               <p>{product.name}</p>
               <p>{product.cost}</p>
@@ -70,6 +83,11 @@ const ProductsList: React.FC<ProductsTest> = ({products, isLoading}) => {
               )}
             </div>
           ))}
+      <Pagination
+        paginate={paginate}
+        productsPerPage={productsPerPage}
+        totalProducts={products?.length}
+      />
     </>
   );
 };
