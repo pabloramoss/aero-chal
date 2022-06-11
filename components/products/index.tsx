@@ -37,7 +37,6 @@ const Products: React.FC = () => {
 
   return (
     <>
-      <button onClick={() => console.log(products)}>products</button>
       <button onClick={() => setSortOption("recent")}>Recent</button>
       <button onClick={() => setSortOption("lowest")}>Lowest price</button>
       <button onClick={() => setSortOption("highest")}>Highest price</button>

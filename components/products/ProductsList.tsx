@@ -5,6 +5,8 @@ import {Product, Redeem} from "@types";
 import {sortProducts} from "@utils/sortBy";
 import Pagination from "@components/pagination/Pagination";
 
+import Filter from "./Filter";
+
 interface ProductsTest {
   products: Product[];
   isLoading: Boolean;
@@ -56,6 +58,7 @@ const ProductsList: React.FC<ProductsTest> = ({products, isLoading}) => {
 
   return (
     <>
+      <Filter products={products} />
       <button onClick={() => console.log(products)}>products</button>
       <button onClick={() => setSortOption("recent")}>Recent</button>
       <button onClick={() => setSortOption("lowest")}>Lowest price</button>
