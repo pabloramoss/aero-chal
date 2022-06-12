@@ -17,6 +17,7 @@ const ProductsList: React.FC<ProductsTest> = ({products, isLoading}) => {
   const {data: user, refetch} = useGetUserQuery();
   const [redeem] = useRedeemMutation();
   const [sortedProducts, setSortedProducts] = useState<Product[]>([]);
+  const [currentCategory, setCurrentCategory] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 10;
@@ -42,8 +43,14 @@ const ProductsList: React.FC<ProductsTest> = ({products, isLoading}) => {
   };
 
   useEffect(() => {
-    products && setSortedProducts(sortProducts(sortOption, products));
-  }, [sortOption]);
+    if (currentCategory === "") {
+      setSortedProducts(sortProducts(sortOption, products));
+    } else {
+      const filterProducts = products.filter((product) => product.category === currentCategory);
+
+      setSortedProducts(sortProducts(sortOption, filterProducts));
+    }
+  }, [sortOption, currentCategory]);
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -58,7 +65,7 @@ const ProductsList: React.FC<ProductsTest> = ({products, isLoading}) => {
 
   return (
     <>
-      <Filter products={products} />
+      <Filter products={products} setCurrentCategory={setCurrentCategory} />
       <button onClick={() => console.log(products)}>products</button>
       <button onClick={() => setSortOption("recent")}>Recent</button>
       <button onClick={() => setSortOption("lowest")}>Lowest price</button>
