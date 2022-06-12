@@ -9,7 +9,7 @@ interface FilterProps {
 
 const Filter: React.FC<FilterProps> = ({setCurrentCategory, products}) => {
   const allCategories = products.map((product) => product.category);
-  const categories = Array.from(new Set(allCategories));
+  const categories = Array.from(new Set(allCategories.concat("All products")));
 
   return (
     <select
