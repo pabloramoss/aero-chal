@@ -39,12 +39,6 @@ const Home: NextPage = () => {
       </Head>
       <main className={styles.main}>
         <Navbar />
-        {`<Navbar/>`}
-        {`<BackgroundWave>`}
-        {`<Hero />`}
-        {`<Walkthrough>`}
-        {`<BackgroundWave/>`}
-        {`<Footer />`}
         <button
           className={pointsAmount.amount === 1000 ? "btn-active" : ""}
           onClick={() => handleSetPoints(1000)}
